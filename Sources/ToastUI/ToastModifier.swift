@@ -52,14 +52,14 @@ struct ToastModifier<Toast: View>: ViewModifier {
 }
 
 extension View {
-  public func toast<Toast: View>(
+  public func toast(
     isPresented: Binding<Bool>,
     position: ToastPosition = ToastDefaults.position,
     duration: TimeInterval = ToastDefaults.duration,
     tapToDismiss: Bool = ToastDefaults.tapToDismiss,
     offsetY: CGFloat = ToastDefaults.offsetY,
     onDismiss: (() -> Void)? = nil,
-    @ViewBuilder content: () -> Toast
+    @ViewBuilder content: () -> some View
   ) -> some View {
     modifier(
       ToastModifier(
@@ -74,16 +74,16 @@ extension View {
     )
   }
 
-  public func toast<Item, Toast: View>(
+  public func toast<Item>(
     item: Binding<Item?>,
     position: ToastPosition = ToastDefaults.position,
     duration: TimeInterval = ToastDefaults.duration,
     tapToDismiss: Bool = ToastDefaults.tapToDismiss,
     offsetY: CGFloat = ToastDefaults.offsetY,
     onDismiss: (() -> Void)? = nil,
-    @ViewBuilder content: (Item) -> Toast
+    @ViewBuilder content: (Item) -> some View
   ) -> some View {
-    self.toast(
+    toast(
       isPresented: item.isPresent(),
       position: position,
       duration: duration,
@@ -95,16 +95,16 @@ extension View {
     }
   }
 
-  public func toast<Value, Toast: View>(
+  public func toast<Value>(
     unwrapping value: Binding<Value?>,
     position: ToastPosition = ToastDefaults.position,
     duration: TimeInterval = ToastDefaults.duration,
     tapToDismiss: Bool = ToastDefaults.tapToDismiss,
     offsetY: CGFloat = ToastDefaults.offsetY,
     onDismiss: (() -> Void)? = nil,
-    @ViewBuilder content: (Binding<Value>) -> Toast
+    @ViewBuilder content: (Binding<Value>) -> some View
   ) -> some View {
-    self.toast(
+    toast(
       isPresented: value.isPresent(),
       position: position,
       duration: duration,
@@ -116,7 +116,7 @@ extension View {
     }
   }
 
-  public func toast<Enum, Case, Toast: View>(
+  public func toast<Enum, Case>(
     unwrapping enum: Binding<Enum?>,
     case casePath: CasePath<Enum, Case>,
     position: ToastPosition = ToastDefaults.position,
@@ -124,9 +124,9 @@ extension View {
     tapToDismiss: Bool = ToastDefaults.tapToDismiss,
     offsetY: CGFloat = ToastDefaults.offsetY,
     onDismiss: (() -> Void)? = nil,
-    @ViewBuilder content: (Binding<Case>) -> Toast
+    @ViewBuilder content: (Binding<Case>) -> some View
   ) -> some View {
-    self.toast(
+    toast(
       unwrapping: `enum`.case(casePath),
       position: position,
       duration: duration,

@@ -19,39 +19,30 @@ public struct ToastView: View {
     }
   }
 
-  public let style: Style
-  public let icon: Image?
-  public let title: String
-  public let subtitle: String?
+  public let state: ToastState
 
-  public init(
-    style: Style = .regular,
-    icon: Image? = nil,
-    title: String,
-    subtitle: String? = nil
-  ) {
-    self.style = style
-    self.icon = icon
-    self.title = title
-    self.subtitle = subtitle
+  public init(_ state: ToastState) {
+    self.state = state
   }
 
   public var body: some View {
     VStack(alignment: .leading, spacing: 12) {
       HStack(spacing: 8) {
-        icon
-        Text(title)
+        if let icon = state.icon {
+          Image(icon)
+        }
+        Text(state.title)
       }
-      subtitle.map { Text($0) }
+      state.subtitle.map { Text($0) }
     }
     .font(.headline.bold())
     .multilineTextAlignment(.leading)
     .padding(12)
-#if !os(watchOS)
-    .background(.regularMaterial)
-#endif
-    .background(style.backgroundColor)
-    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
-    .padding(16)
+    #if !os(watchOS)
+      .background(.regularMaterial)
+    #endif
+      .background(state.style.backgroundColor)
+      .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+      .padding(16)
   }
 }

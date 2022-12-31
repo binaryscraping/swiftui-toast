@@ -13,19 +13,23 @@ let package = Package(
   products: [
     .library(
       name: "ToastUI",
-      targets: ["ToastUI"])
+      targets: ["ToastUI"]
+    ),
   ],
   dependencies: [
-    .package(url: "https://github.com/pointfreeco/swiftui-navigation", from: "0.1.0")
+    .package(url: "https://github.com/pointfreeco/swiftui-navigation", from: "0.4.5"),
   ],
   targets: [
     .target(
       name: "ToastUI",
       dependencies: [
-        .product(name: "SwiftUINavigation", package: "swiftui-navigation")
-      ]),
+        .product(name: "SwiftUINavigation", package: "swiftui-navigation"),
+        .product(name: "_SwiftUINavigationState", package: "swiftui-navigation"),
+      ]
+    ),
     .testTarget(
       name: "ToastUITests",
-      dependencies: ["ToastUI"]),
+      dependencies: ["ToastUI"]
+    ),
   ]
 )
