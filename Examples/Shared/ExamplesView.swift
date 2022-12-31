@@ -1,3 +1,4 @@
+import _SwiftUINavigationState
 import SwiftUI
 import ToastUI
 
@@ -8,46 +9,56 @@ struct ExamplesView: View {
     VStack(spacing: 12) {
       Button("Regular toast") {
         toast = ToastView(
-          style: .regular,
-          icon: Image(systemName: "exclamationmark.square"),
-          title: "Regular toast",
-          subtitle: "This is the subtitle."
+          ToastState(
+            style: .regular,
+            icon: ImageState(systemName: "exclamationmark.square"),
+            title: TextState("Regular toast"),
+            subtitle: TextState("This is the subtitle.")
+          )
         )
       }
 
       Button("Failure toast") {
         toast = ToastView(
-          style: .failure,
-          icon: Image(systemName: "exclamationmark.square"),
-          title: "Failure toast",
-          subtitle: "This is the subtitle."
+          ToastState(
+            style: .failure,
+            icon: ImageState(systemName: "exclamationmark.square"),
+            title: TextState("Failure toast"),
+            subtitle: TextState("This is the subtitle.")
+          )
         )
       }
 
       Button("Warning toast") {
         toast = ToastView(
-          style: .warning,
-          icon: Image(systemName: "exclamationmark.square"),
-          title: "Warning toast",
-          subtitle: "This is the subtitle."
+          ToastState(
+            style: .warning,
+            icon: ImageState(systemName: "exclamationmark.square"),
+            title: TextState("Warning toast"),
+            subtitle: TextState("This is the subtitle.")
+          )
         )
       }
 
       Button("Info toast") {
         toast = ToastView(
-          style: .info,
-          icon: Image(systemName: "exclamationmark.square"),
-          title: "Info toast",
-          subtitle: "This is the subtitle."
+          ToastState(
+            style: .info,
+            icon: ImageState(systemName: "exclamationmark.square"),
+            title: TextState("Info toast"),
+            subtitle: TextState("This is the subtitle.")
+          )
         )
       }
 
       Button("Success toast") {
         toast = ToastView(
-          style: .success,
-          icon: Image(systemName: "exclamationmark.square"),
-          title: "Success toast",
-          subtitle: "This is the subtitle."
+          ToastState(
+            style: .success,
+            icon: ImageState(systemName: "exclamationmark.square"),
+            title: TextState("Success toast"),
+            subtitle: TextState("This is the subtitle.")
+          )
         )
       }
     }
