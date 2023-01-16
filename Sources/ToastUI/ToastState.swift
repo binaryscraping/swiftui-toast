@@ -3,7 +3,7 @@ import CasePaths
 import SwiftUI
 import SwiftUINavigation
 
-public struct ToastState: Identifiable, Equatable, Hashable {
+public struct ToastState: Identifiable {
   public let id = UUID()
 
   let style: ToastView.Style
@@ -21,6 +21,24 @@ public struct ToastState: Identifiable, Equatable, Hashable {
     self.icon = icon
     self.title = title
     self.subtitle = subtitle
+  }
+}
+
+extension ToastState: Equatable {
+  public static func == (lhs: ToastState, rhs: ToastState) -> Bool {
+    lhs.style == rhs.style &&
+    lhs.icon == rhs.icon &&
+    lhs.title == rhs.title &&
+    lhs.subtitle == rhs.subtitle
+  }
+}
+
+extension ToastState: Hashable {
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(style)
+    hasher.combine(icon)
+    hasher.combine(title)
+    hasher.combine(subtitle)
   }
 }
 
