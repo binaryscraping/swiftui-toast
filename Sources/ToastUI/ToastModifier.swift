@@ -1,52 +1,75 @@
 import SwiftUI
 import SwiftUINavigation
 
-public enum ToastPosition {
-  case top, bottom
-}
-
 struct ToastModifier<Toast: View>: ViewModifier {
   @Binding var isPresented: Bool
+
   let duration: TimeInterval
   let tapToDismiss: Bool
-  let position: ToastPosition
-  var offsetY: CGFloat
+  let alignment: Alignment
+  let additionalOffset: CGSize
+
+  @State private var offset: CGSize = .zero
+  @State private var delta: CGFloat = 0
+
+  private let maxDelta: CGFloat = 20
+
   @ViewBuilder var toast: Toast
-  let completion: (() -> Void)?
+
+  let onDismiss: (() -> Void)?
 
   func body(content: Content) -> some View {
-    ZStack {
-      content
-
-      main
-        .offset(y: offsetY)
-        .animation(.spring(), value: isPresented)
-    }
+    content
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .overlay(main, alignment: alignment)
   }
 
   @ViewBuilder
   private var main: some View {
-    if isPresented {
-      VStack(spacing: 0) {
-        if position == .bottom {
-          Spacer()
-        }
+    Group {
+      if isPresented {
         toast
-        if position == .top {
-          Spacer()
-        }
+          .transition(
+            AnyTransition.move(edge: edge).combined(with: .opacity)
+          )
+          .animation(.spring().speed(1.5))
+          .zIndex(1)
+          .onTapGesture(perform: dismiss)
+          .offset(offset)
       }
-      .task { @MainActor in
+    }
+    .task(id: isPresented) {
+      if isPresented {
         try? await Task.sleep(nanoseconds: NSEC_PER_SEC * UInt64(duration))
-        withAnimation(.spring()) {
-          isPresented = false
-        }
+        dismiss()
       }
-      .onDisappear { completion?() }
-      .transition(
-        .move(edge: position == .top ? .top : .bottom)
-          .combined(with: .opacity)
-      )
+    }
+  }
+
+  private var edge: Edge {
+    switch alignment {
+    case .top:
+      return .top
+
+    case .topLeading, .leading, .bottomLeading:
+      return .leading
+
+    case .topTrailing, .trailing, .bottomTrailing:
+      return .trailing
+
+    case .bottom:
+      return .bottom
+
+    default:
+      return .bottom
+    }
+  }
+
+  private func dismiss() {
+    withAnimation {
+      isPresented = false
+      offset = .zero
+      onDismiss?()
     }
   }
 }
@@ -54,10 +77,10 @@ struct ToastModifier<Toast: View>: ViewModifier {
 extension View {
   public func toast(
     isPresented: Binding<Bool>,
-    position: ToastPosition = ToastDefaults.position,
+    alignment: Alignment = ToastDefaults.alignment,
     duration: TimeInterval = ToastDefaults.duration,
     tapToDismiss: Bool = ToastDefaults.tapToDismiss,
-    offsetY: CGFloat = ToastDefaults.offsetY,
+    offset: CGSize = ToastDefaults.offset,
     onDismiss: (() -> Void)? = nil,
     @ViewBuilder content: () -> some View
   ) -> some View {
@@ -66,29 +89,29 @@ extension View {
         isPresented: isPresented,
         duration: duration,
         tapToDismiss: tapToDismiss,
-        position: position,
-        offsetY: offsetY,
+        alignment: alignment,
+        additionalOffset: offset,
         toast: content,
-        completion: onDismiss
+        onDismiss: onDismiss
       )
     )
   }
 
   public func toast<Item>(
     item: Binding<Item?>,
-    position: ToastPosition = ToastDefaults.position,
+    alignment: Alignment = ToastDefaults.alignment,
     duration: TimeInterval = ToastDefaults.duration,
     tapToDismiss: Bool = ToastDefaults.tapToDismiss,
-    offsetY: CGFloat = ToastDefaults.offsetY,
+    offset: CGSize = ToastDefaults.offset,
     onDismiss: (() -> Void)? = nil,
     @ViewBuilder content: (Item) -> some View
   ) -> some View {
     toast(
       isPresented: item.isPresent(),
-      position: position,
+      alignment: alignment,
       duration: duration,
       tapToDismiss: tapToDismiss,
-      offsetY: offsetY,
+      offset: offset,
       onDismiss: onDismiss
     ) {
       item.wrappedValue.map(content)
@@ -97,19 +120,19 @@ extension View {
 
   public func toast<Value>(
     unwrapping value: Binding<Value?>,
-    position: ToastPosition = ToastDefaults.position,
+    alignment: Alignment = ToastDefaults.alignment,
     duration: TimeInterval = ToastDefaults.duration,
     tapToDismiss: Bool = ToastDefaults.tapToDismiss,
-    offsetY: CGFloat = ToastDefaults.offsetY,
+    offset: CGSize = ToastDefaults.offset,
     onDismiss: (() -> Void)? = nil,
     @ViewBuilder content: (Binding<Value>) -> some View
   ) -> some View {
     toast(
       isPresented: value.isPresent(),
-      position: position,
+      alignment: alignment,
       duration: duration,
       tapToDismiss: tapToDismiss,
-      offsetY: offsetY,
+      offset: offset,
       onDismiss: onDismiss
     ) {
       Binding(unwrapping: value).map(content)
@@ -119,19 +142,19 @@ extension View {
   public func toast<Enum, Case>(
     unwrapping enum: Binding<Enum?>,
     case casePath: CasePath<Enum, Case>,
-    position: ToastPosition = ToastDefaults.position,
+    alignment: Alignment = ToastDefaults.alignment,
     duration: TimeInterval = ToastDefaults.duration,
     tapToDismiss: Bool = ToastDefaults.tapToDismiss,
-    offsetY: CGFloat = ToastDefaults.offsetY,
+    offset: CGSize = ToastDefaults.offset,
     onDismiss: (() -> Void)? = nil,
     @ViewBuilder content: (Binding<Case>) -> some View
   ) -> some View {
     toast(
       unwrapping: `enum`.case(casePath),
-      position: position,
+      alignment: alignment,
       duration: duration,
       tapToDismiss: tapToDismiss,
-      offsetY: offsetY,
+      offset: offset,
       onDismiss: onDismiss,
       content: content
     )

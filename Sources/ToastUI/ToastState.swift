@@ -27,9 +27,9 @@ public struct ToastState: Identifiable {
 extension ToastState: Equatable {
   public static func == (lhs: ToastState, rhs: ToastState) -> Bool {
     lhs.style == rhs.style &&
-    lhs.icon == rhs.icon &&
-    lhs.title == rhs.title &&
-    lhs.subtitle == rhs.subtitle
+      lhs.icon == rhs.icon &&
+      lhs.title == rhs.title &&
+      lhs.subtitle == rhs.subtitle
   }
 }
 
@@ -45,18 +45,18 @@ extension ToastState: Hashable {
 extension View {
   public func toast(
     unwrapping value: Binding<ToastState?>,
-    position: ToastPosition = ToastDefaults.position,
+    alignment: Alignment = ToastDefaults.alignment,
     duration: TimeInterval = ToastDefaults.duration,
     tapToDismiss: Bool = ToastDefaults.tapToDismiss,
-    offsetY: CGFloat = ToastDefaults.offsetY,
+    offset: CGSize = ToastDefaults.offset,
     onDismiss: (() -> Void)? = nil
   ) -> some View {
     toast(
       unwrapping: value,
-      position: position,
+      alignment: alignment,
       duration: duration,
       tapToDismiss: tapToDismiss,
-      offsetY: offsetY,
+      offset: offset,
       onDismiss: onDismiss
     ) { $state in
       ToastView(state)
