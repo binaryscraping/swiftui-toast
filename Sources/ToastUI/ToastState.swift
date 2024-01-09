@@ -1,7 +1,7 @@
-import _SwiftUINavigationState
 import CasePaths
 import SwiftUI
 import SwiftUINavigation
+import SwiftUINavigationCore
 
 public struct ToastState: Identifiable {
   public let id = UUID()
@@ -26,10 +26,8 @@ public struct ToastState: Identifiable {
 
 extension ToastState: Equatable {
   public static func == (lhs: ToastState, rhs: ToastState) -> Bool {
-    lhs.style == rhs.style &&
-      lhs.icon == rhs.icon &&
-      lhs.title == rhs.title &&
-      lhs.subtitle == rhs.subtitle
+    lhs.style == rhs.style && lhs.icon == rhs.icon && lhs.title == rhs.title
+      && lhs.subtitle == rhs.subtitle
   }
 }
 

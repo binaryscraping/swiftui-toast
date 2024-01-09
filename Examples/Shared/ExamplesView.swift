@@ -1,5 +1,5 @@
-import _SwiftUINavigationState
 import SwiftUI
+import SwiftUINavigationCore
 import ToastUI
 
 struct ExamplesView: View {

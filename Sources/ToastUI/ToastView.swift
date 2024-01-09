@@ -41,8 +41,8 @@ public struct ToastView: View {
     #if !os(watchOS)
       .background(.regularMaterial)
     #endif
-      .background(state.style.backgroundColor)
-      .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
-      .padding(16)
+    .background(state.style.backgroundColor)
+    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+    .padding(16)
   }
 }

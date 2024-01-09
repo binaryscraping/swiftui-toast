@@ -1,5 +1,5 @@
-import _SwiftUINavigationState
 import SwiftUI
+import SwiftUINavigationCore
 
 public struct ImageState: Hashable, Equatable {
   fileprivate var modifiers: [Modifier] = []
